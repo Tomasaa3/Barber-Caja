@@ -1,16 +1,19 @@
 from PyQt5 import QtWidgets
 from ui import screens
+from data import models
 
 
 class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+        self.current_order = None
         self.show_enter_screen()
     
     def show_enter_screen(self):
         self.setCentralWidget(screens.Enter_Screen(self))
     
     def show_barbers_screen(self):
+        self.current_order = models.Order()
         self.setCentralWidget(screens.Barbers_Screen(self))
     
     def show_service_payment_method_screen(self):
@@ -19,12 +22,17 @@ class MyWindow(QtWidgets.QMainWindow):
     def show_services_screen(self):
         self.setCentralWidget(screens.Services_Screen(self))
 
+    def show_tip_payment_method_screen(self):
+        self.setCentralWidget(screens.Tip_Payment_Method_Screen(self))
+    
     def show_tip_screen(self):
         self.setCentralWidget(screens.Tip_Screen(self))
+    
+    def show_client_name_screen(self):
+        self.setCentralWidget(screens.Client_Name_Screen(self))
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     window = MyWindow()
     window.show()
