@@ -252,3 +252,55 @@ class Client_Name_Screen(QtWidgets.QWidget):
             self.window.show_enter_screen()
         else:
             self.window.show_tip_screen()
+
+class Config_Barbers_Screen(QtWidgets.QWidget):
+    def __init__(self, main_window: QtWidgets.QMainWindow):
+        super().__init__()
+        self.window = main_window
+
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+
+        #Lista
+        self.list = QtWidgets.QListWidget()
+        self.load_barbers()
+        self.main_layout.addWidget(self.list)
+
+        #Botónes
+        self.button_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.addLayout(self.button_layout)
+            #Añadir Barbero
+        add_button = QtWidgets.QPushButton("Agregar")
+        add_button.clicked.connect(self.add_barber)
+        self.button_layout.addWidget(add_button)
+            #Borrar Barbero
+        delete_button = QtWidgets.QPushButton("Borrar")
+        delete_button.clicked.connect(self.delete_barber)
+        self.button_layout.addWidget(delete_button)
+    
+    def load_barbers(self):
+        self.list.clear()
+        for barber in config.BARBEROS:
+            self.list.addItem(barber)
+    
+    def delete_barber(self):
+        selected_barber = self.list.currentItem()
+        if not selected_barber:
+            return
+        else:
+            config.BARBEROS.remove(selected_barber.text())
+            self.load_barbers()
+        
+    def add_barber(self):
+        popup = components.addBarberDialog(self)
+
+        if popup.exec_() != QtWidgets.QDialog.Accepted:
+            return
+        
+        name = popup.name_input.text().strip()
+        ##Configurar Porcentajes!!!!!!
+        if not name:
+            return
+        
+        config.BARBEROS.append(name)
+
+        self.load_barbers()

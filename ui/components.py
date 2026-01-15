@@ -107,6 +107,36 @@ class PaymentMethod(QtWidgets.QWidget):
             if 0 < num <= len(config.METODOS_DE_PAGO):
                 self.submitted.emit(tecla)
                 event.accept()
+            
+class addBarberDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Agregar Barbero")
+        
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+
+        #Nombre
+        self.name_input = QtWidgets.QLineEdit()
+        self.name_input.setPlaceholderText("Nombre")
+        self.main_layout.addWidget(self.name_input)
+
+        #Porcentaje
+        self.percent_input = QtWidgets.QSpinBox()
+        self.percent_input.setRange(0, 100)
+        self.percent_input.setSuffix(" %")
+        self.percent_input.setValue(50)
+        self.main_layout.addWidget(self.percent_input)
+
+        #Botones
+        self.buttons_layout = QtWidgets.QHBoxLayout()
+        self.b_accept = QtWidgets.QPushButton("Aceptar")
+        self.b_accept.clicked.connect(self.accept)
+        self.b_cancel = QtWidgets.QPushButton("Cancelar")
+        self.b_cancel.clicked.connect(self.reject)
+        self.buttons_layout.addWidget(self.b_accept)
+        self.buttons_layout.addWidget(self.b_cancel)
+
+        self.main_layout.addLayout(self.buttons_layout)
 
 def center_label(text: str) -> QtWidgets.QLabel:
     label = QtWidgets.QLabel(text)

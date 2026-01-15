@@ -1,3 +1,4 @@
+#Cambiar barberos a un diccionario, que contega porcentajes de ganancia
 BARBEROS = ["Gera",
             "Paya",
             "Tizi",

@@ -1,11 +1,16 @@
 from PyQt5 import QtWidgets
 from ui import screens
+from ui import topbar
 from data import models
 
 
 class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.topbar = topbar.TopBar(self)
+        self.setMenuBar(self.topbar)
+
         self.current_order = None
         self.show_enter_screen()
     
@@ -30,6 +35,9 @@ class MyWindow(QtWidgets.QMainWindow):
     
     def show_client_name_screen(self):
         self.setCentralWidget(screens.Client_Name_Screen(self))
+    
+    def show_config_barbers_screen(self):
+        self.setCentralWidget(screens.Config_Barbers_Screen(self))
 
 if __name__ == "__main__":
     import sys
