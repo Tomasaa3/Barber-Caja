@@ -38,6 +38,12 @@ class MyWindow(QtWidgets.QMainWindow):
     
     def show_config_barbers_screen(self):
         self.setCentralWidget(screens.Config_Barbers_Screen(self))
+    
+    def show_config_services_screen(self):
+        self.setCentralWidget(screens.Config_Services_Screen(self))
+    
+    def show_config_payment_methods_screen(self):
+        self.setCentralWidget(screens.Config_Payment_Methods_Screen(self))
 
 if __name__ == "__main__":
     import sys
@@ -47,7 +53,7 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
 
-#show event
+#en showevent
 #print("Payment_Metod_Screen: showEvent (hasFocus=", self.hasFocus(), ")")
 
 #en keypressevent
