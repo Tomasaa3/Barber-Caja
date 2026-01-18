@@ -125,6 +125,38 @@ class addServiceDialog(QtWidgets.QDialog):
         self.cancel_button.clicked.connect(self.reject)
         self.button_layout.addWidget(self.cancel_button)
 
+class addPaymentMethod(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        self.setWindowTitle("Agregar método de Pago")
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.button_layout = QtWidgets.QHBoxLayout()
+
+        #Input - Método de Pago
+        self.f_input = QtWidgets.QLineEdit()
+        self.f_input.setPlaceholderText("Método de Pago")
+        self.main_layout.addWidget(self.f_input)
+
+        #Input - Recargo
+        self.s_input = QtWidgets.QLineEdit()
+        self.s_input.setPlaceholderText("Recargo")
+        self.validator = QtGui.QDoubleValidator()
+        self.s_input.setValidator(self.validator)
+        self.main_layout.addWidget(self.s_input)
+
+        #Botones
+            #Aceptar
+        self.accept_b = QtWidgets.QPushButton("Aceptar")
+        self.accept_b.clicked.connect(self.accept)
+        self.button_layout.addWidget(self.accept_b)
+            #Cancelar
+        self.cancel_b = QtWidgets.QPushButton("Cancelar")
+        self.cancel_b.clicked.connect(self.reject)
+        self.button_layout.addWidget(self.cancel_b)
+
+        self.main_layout.addLayout(self.button_layout)
+
 def center_label(text: str) -> QtWidgets.QLabel:
     label = QtWidgets.QLabel(text)
     label.setAlignment(Qt.AlignCenter)

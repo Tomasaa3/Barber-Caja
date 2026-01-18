@@ -318,9 +318,10 @@ class Config_Barbers_Screen(QtWidgets.QWidget):
         sel_item = self.table.currentIndex().data()
         if not sel_item:
             return
-        else:
-            del config.BARBEROS[sel_item]
-            self.load_barbers()
+        if self.table.currentIndex().column() != 0:
+            return
+        del config.BARBEROS[sel_item]
+        self.load_barbers()
 
     def exit_barbers(self):
         self.window.show_enter_screen()
@@ -376,12 +377,17 @@ class Config_Services_Screen(QtWidgets.QWidget):
         if not value or not service:
             return
         else:
-            print(f"Se añadió el servicio: {service} Precio: ${int(value):,}")
+            print(f"Se añadió el servicio: {service} Precio: $ {int(value):,}")
             config.SERVICIOS[service] = int(value)
         self.load_services()
 
     def del_service(self):
         sel_item = self.table.currentIndex().data()
+        if not sel_item:
+            return
+        if self.table.currentIndex().column() != 0:
+            return
+        print(f"Se borró el servicio: {sel_item}, Precio: $ {config.SERVICIOS[sel_item]:,}")
         del config.SERVICIOS[sel_item]
         self.load_services()
     
@@ -424,13 +430,32 @@ class Config_Payment_Methods_Screen(QtWidgets.QWidget):
         self.model.setHorizontalHeaderLabels(["Método de Pago", "Recargo"])
         for payment_method in config.METODOS_DE_PAGO:
             method = QtGui.QStandardItem(payment_method)
-            recharge = QtGui.QStandardItem(f"$ {config.METODOS_DE_PAGO[payment_method]:,}")
+            recharge = QtGui.QStandardItem(f"$ {config.METODOS_DE_PAGO[payment_method]}")
             self.model.appendRow([method, recharge])
         self.table.setModel(self.model)
 
     def add_payment_method(self):
-        print("AÑADIR")
+        popup = components.addPaymentMethod(self)
+        if popup.exec_() != QtWidgets.QDialog.Accepted:
+            return
+        payment_method = popup.f_input.text().strip()
+        payment_recharge = popup.s_input.text().strip()
+        if not payment_recharge or not payment_method:
+            print("No")
+        else:
+            config.METODOS_DE_PAGO[payment_method] = payment_recharge
+            self.load_payment_methods()
+
     def del_payment_method(self):
         sel_item = self.table.currentIndex().data()
+        if not sel_item:
+            print("No")
+            return
+        else:
+            if self.table.currentIndex().column() == 1:
+                return
+            del config.METODOS_DE_PAGO[sel_item]
+            self.load_payment_methods()
+
     def exit_payment_methods_screen(self):
         self.window.show_enter_screen()

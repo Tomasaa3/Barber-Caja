@@ -13,7 +13,7 @@ class MyWindow(QtWidgets.QMainWindow):
 
         self.current_order = None
         self.show_enter_screen()
-    
+
     def show_enter_screen(self):
         self.setCentralWidget(screens.Enter_Screen(self))
     
