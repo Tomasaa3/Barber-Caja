@@ -161,3 +161,11 @@ def center_label(text: str) -> QtWidgets.QLabel:
     label = QtWidgets.QLabel(text)
     label.setAlignment(Qt.AlignCenter)
     return label
+
+class Load_Barber_Table(QtWidgets.QWidget):
+    def __init__(self, barber):
+        super().__init__()
+        
+        self.layout = QtWidgets.QHBoxLayout(self)
+        self.table = QtWidgets.QTableView()
+        self.layout.addWidget(self.table)

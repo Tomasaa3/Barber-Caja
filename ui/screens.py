@@ -19,8 +19,17 @@ class Enter_Screen(QtWidgets.QWidget):
         self.setFocus()
     
     def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Return and event.modifiers() == Qt.ControlModifier:
+            self.window.show_consult_mode_screen()
+            return
+
         if event.key() == Qt.Key_Return:
             self.window.show_barbers_screen()
+        
+        if event.key() == Qt.Key_T:
+            from logic import storage
+            ordenes = storage.load_orders()
+            print(ordenes)
 
 class Barbers_Screen(QtWidgets.QWidget):
     def __init__(self, main_window: QtWidgets.QMainWindow):
@@ -72,7 +81,7 @@ class Service_Payment_Method_Screen(QtWidgets.QWidget):
 
         num = 1
         for method in config.METODOS_DE_PAGO:
-            text = str(num) + "-" + method
+            text = str(num) + "-" + method + "\n Recargo: $" + f"{config.METODOS_DE_PAGO[method]:,}"
             self.third_layout.addWidget(components.center_label(text))
             num += 1
 
@@ -93,7 +102,9 @@ class Service_Payment_Method_Screen(QtWidgets.QWidget):
             if 0 < num <= len(config.METODOS_DE_PAGO):
                 payment_methods = list(config.METODOS_DE_PAGO)
                 print(f"Servicio - Método de Pago: {payment_methods[num-1]}")
+                print(f"Servicio - Recarga: {config.METODOS_DE_PAGO[payment_methods[num-1]]}")
                 self.order.service_payment_method = payment_methods[num-1]
+                self.order.service_recharge = config.METODOS_DE_PAGO[payment_methods[num-1]]
                 self.window.show_services_screen() #Pantalla siguiente
 
 class Services_Screen(QtWidgets.QWidget):
@@ -232,7 +243,7 @@ class Tip_Screen(QtWidgets.QWidget):
         else:
             self.window.show_tip_payment_method_screen()
 
-class Client_Name_Screen(QtWidgets.QWidget):
+class Client_Name_Screen(QtWidgets.QWidget):            #Ultima pantalla del loop input
     def __init__(self, main_window: QtWidgets.QMainWindow):
         super().__init__()
         self.window = main_window
@@ -249,7 +260,6 @@ class Client_Name_Screen(QtWidgets.QWidget):
     def on_subbmit(self, answer):
         print(f"Cliente: {answer}\n\n")
         self.order.client_name = answer
-        print(self.order)
         self.window.show_enter_screen()
     
     def on_cancel(self, answer):
@@ -439,7 +449,7 @@ class Config_Payment_Methods_Screen(QtWidgets.QWidget):
         if popup.exec_() != QtWidgets.QDialog.Accepted:
             return
         payment_method = popup.f_input.text().strip()
-        payment_recharge = popup.s_input.text().strip()
+        payment_recharge = int(popup.s_input.text().strip())
         if not payment_recharge or not payment_method:
             print("No")
         else:
@@ -459,3 +469,42 @@ class Config_Payment_Methods_Screen(QtWidgets.QWidget):
 
     def exit_payment_methods_screen(self):
         self.window.show_enter_screen()
+
+class Consult_Mode_Screen(QtWidgets.QWidget):
+    def __init__(self, main_window: QtWidgets.QMainWindow):
+        super().__init__()
+        self.window = main_window
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.barbers_layout = QtWidgets.QHBoxLayout()
+
+        num = 1
+        for barber in config.BARBEROS:
+            text = f"{num} - {barber}"
+            label = components.center_label(text)
+            self.barbers_layout.addWidget(label)
+            num += 1
+        self.main_layout.addLayout(self.barbers_layout)
+    
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.setFocus()
+    
+    def keyPressEvent(self, event):
+        
+        if event.key() == Qt.Key_Escape:
+            self.window.show_enter_screen()
+        
+        if event.text().isdigit():
+            num = int(event.text())
+            if 0 < num <= len(config.BARBEROS):
+                self.load_table(num)
+    
+    def load_table(self, num):
+        existe = self.findChildren(QtWidgets.QTableView)
+        if existe:
+            print("Existe!")
+        else:
+            print("No encontrado")
+            self.table = components.Load_Barber_Table(num)
+            self.main_layout.addWidget(self.table)
+            

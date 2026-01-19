@@ -8,6 +8,7 @@ class Order:
     client_name: Optional[str] = None
 
     service_payment_method: Optional[str] = None
+    service_recharge: Optional[int] = None
     service_price: Optional[int] = None
     service: Optional[str] = None
 

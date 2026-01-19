@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 from ui import screens
 from ui import topbar
-from data import models
+from logic import models
 
 
 class MyWindow(QtWidgets.QMainWindow):
@@ -10,7 +10,7 @@ class MyWindow(QtWidgets.QMainWindow):
 
         self.topbar = topbar.TopBar(self)
         self.setMenuBar(self.topbar)
-
+        
         self.current_order = None
         self.show_enter_screen()
 
@@ -44,6 +44,9 @@ class MyWindow(QtWidgets.QMainWindow):
     
     def show_config_payment_methods_screen(self):
         self.setCentralWidget(screens.Config_Payment_Methods_Screen(self))
+    
+    def show_consult_mode_screen(self):
+        self.setCentralWidget(screens.Consult_Mode_Screen(self))
 
 if __name__ == "__main__":
     import sys
