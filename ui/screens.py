@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from ui import components
+from logic import storage
 import config
 
 class Enter_Screen(QtWidgets.QWidget):
@@ -164,7 +165,7 @@ class Services_Screen(QtWidgets.QWidget):
         print(f"Servicio - Monto: {answer}")
         print("Servicio: Personalizado")
         self.order.service = "Personalizado"
-        self.order.service_price = answer
+        self.order.service_price = int(answer)
         self.window.show_tip_payment_method_screen()
     
     def on_cancel(self, answer):
@@ -258,8 +259,9 @@ class Client_Name_Screen(QtWidgets.QWidget):            #Ultima pantalla del loo
         self.main_layout.addWidget(self.input)
 
     def on_subbmit(self, answer):
-        print(f"Cliente: {answer}\n\n")
+        print(f"Cliente: {answer}\n")
         self.order.client_name = answer
+        storage.save_order(self.order)
         self.window.show_enter_screen()
     
     def on_cancel(self, answer):
@@ -474,9 +476,11 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
     def __init__(self, main_window: QtWidgets.QMainWindow):
         super().__init__()
         self.window = main_window
+        #Layout
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.barbers_layout = QtWidgets.QHBoxLayout()
 
+        #Label por Barbero
         num = 1
         for barber in config.BARBEROS:
             text = f"{num} - {barber}"
@@ -490,21 +494,22 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
         self.setFocus()
     
     def keyPressEvent(self, event):
-        
+        #Escape para salir
         if event.key() == Qt.Key_Escape:
             self.window.show_enter_screen()
-        
+        #Si la tecla presionada es un número
         if event.text().isdigit():
             num = int(event.text())
             if 0 < num <= len(config.BARBEROS):
+                #Cargamos una tabla
                 self.load_table(num)
     
     def load_table(self, num):
-        existe = self.findChildren(QtWidgets.QTableView)
-        if existe:
-            print("Existe!")
-        else:
-            print("No encontrado")
-            self.table = components.Load_Barber_Table(num)
+        #findchild busca una tabla y si no la encuentra devuelve None
+        existe = self.findChild(QtWidgets.QTableView)
+        if existe:#Si existe una tabla llamamos a la función le pasamos la tabla
+            self.table = components.Load_Barber_Table(True, existe, num)
+        else:#Si no existe una tabla llamamos a la función y le pasamos None
+            self.table = components.Load_Barber_Table(False, None, num)
             self.main_layout.addWidget(self.table)
             

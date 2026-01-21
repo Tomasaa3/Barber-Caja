@@ -1,0 +1,57 @@
+[
+    {
+        "barber": "Paya",
+        "client_name": "Jose",
+        "service_payment_method": "Mercado Pago",
+        "service_recharge": 2000,
+        "service_price": 20000,
+        "service": "Degradado",
+        "tip_payment_method": "Mercado Pago",
+        "tip": 0,
+        "created_at": "2026-01-21T12:39:10.509377"
+    },
+    {
+        "barber": "Tizi",
+        "client_name": "Pedro",
+        "service_payment_method": "Mercado Pago",
+        "service_recharge": 2000,
+        "service_price": 15000,
+        "service": "Clásico",
+        "tip_payment_method": "Mercado Pago",
+        "tip": 0,
+        "created_at": "2026-01-21T12:39:10.509377"
+    },
+    {
+        "barber": "Gera",
+        "client_name": "Pepito",
+        "service_payment_method": "Mercado Pago",
+        "service_recharge": 2000,
+        "service_price": 20000,
+        "service": "Degradado",
+        "tip_payment_method": "Efectivo",
+        "tip": 40000,
+        "created_at": "2026-01-21T13:02:53.912480"
+    },
+    {
+        "barber": "Paya",
+        "client_name": "Menganito",
+        "service_payment_method": "Efectivo",
+        "service_recharge": 0,
+        "service_price": 6000,
+        "service": "Barba",
+        "tip_payment_method": "Efectivo",
+        "tip": 2000,
+        "created_at": "2026-01-21T13:07:32.254531"
+    },
+    {
+        "barber": "Tizi",
+        "client_name": "El Brujito Culo Roto",
+        "service_payment_method": "Efectivo",
+        "service_recharge": 0,
+        "service_price": 10000,
+        "service": "Personalizado",
+        "tip_payment_method": "Efectivo",
+        "tip": 1000,
+        "created_at": "2026-01-21T14:01:41.875951"
+    }
+]
