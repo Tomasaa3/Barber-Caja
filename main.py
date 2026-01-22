@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 from ui import screens
 from ui import topbar
 from logic import models
+from logic import config_loader
 
 
 class MyWindow(QtWidgets.QMainWindow):
@@ -11,6 +12,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.topbar = topbar.TopBar(self)
         self.setMenuBar(self.topbar)
         
+        self.config = config_loader.load_all_configs()
         self.current_order = None
         self.show_enter_screen()
 
@@ -54,10 +56,3 @@ if __name__ == "__main__":
     window = MyWindow()
     window.show()
     sys.exit(app.exec_())
-
-
-#en showevent
-#print("Payment_Metod_Screen: showEvent (hasFocus=", self.hasFocus(), ")")
-
-#en keypressevent
-#print("Payment_Metod_Screen: keyPressEvent -> key:", event.key(), " text:'"+event.text()+"' modifiers:", event.modifiers())

@@ -167,8 +167,6 @@ class addPaymentMethod(QtWidgets.QDialog):
 class Load_Barber_Table(QtWidgets.QWidget):
     def __init__(self, exsist: bool, created_table: QtWidgets.QTableView, num_barber: int):
         super().__init__()
-        import os
-        os.system('clear')
         #Layout
         self.main_layout = QtWidgets.QVBoxLayout(self)
         #Fecha y folder
@@ -192,22 +190,24 @@ class Load_Barber_Table(QtWidgets.QWidget):
         self.model.setHorizontalHeaderLabels(headers)
         #Carga de ordenes del barbero
         orders = storage.load_orders(folder)
-        filtered_orders = [
-            o for o in orders if o["barber"] == barberos[num_barber-1]
-        ]
-        num = 1
-        for order in filtered_orders:
-            row = [
-                QtGui.QStandardItem(order["client_name"]),
-                QtGui.QStandardItem(str(num)),
-                QtGui.QStandardItem(order["service"]),
-                QtGui.QStandardItem(f"${order["service_price"]:,}"),
-                QtGui.QStandardItem(order["service_payment_method"]),
-                QtGui.QStandardItem(f"${order["tip"]:,}"),
-                QtGui.QStandardItem(order["tip_payment_method"])
+        if orders:
+            filtered_orders = [
+                o for o in orders if o["barber"] == barberos[num_barber-1]
             ]
-            num += 1
-            self.model.appendRow(row)
+            num = 1
+            for order in filtered_orders:
+                row = [
+                    QtGui.QStandardItem(order["client_name"]),
+                    QtGui.QStandardItem(str(num)),
+                    QtGui.QStandardItem(order["service"]),
+                    QtGui.QStandardItem(f"${order["service_price"]:,}"),
+                    QtGui.QStandardItem(order["service_payment_method"]),
+                    QtGui.QStandardItem(f"${order["tip"]:,}"),
+                    QtGui.QStandardItem(order["tip_payment_method"])
+                ]
+                num += 1
+                self.model.appendRow(row)
+
         if exsist: #Si existe una tabla, simplemente cargamos el modelo
             print(f"Usando la tabla existente para {barberos[num_barber-1]}.")
             created_table.setModel(self.model)
@@ -215,6 +215,8 @@ class Load_Barber_Table(QtWidgets.QWidget):
             print(f"Creando una nueva tabla para {barberos[num_barber-1]}")
             self.table = QtWidgets.QTableView()
             self.table.setModel(self.model)
+            self.table.resizeColumnsToContents()
+            self.table.setFocusPolicy(Qt.NoFocus)
             self.main_layout.addWidget(self.table)
 
 def center_label(text: str) -> QtWidgets.QLabel:
