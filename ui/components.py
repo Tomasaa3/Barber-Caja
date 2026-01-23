@@ -196,6 +196,9 @@ class Load_Barber_Table(QtWidgets.QWidget):
             ]
             num = 1
             for order in filtered_orders:
+                time = order["created_at"]
+                time = datetime.fromisoformat(time)
+                time = time.strftime("%H:%M:%S")
                 row = [
                     QtGui.QStandardItem(order["client_name"]),
                     QtGui.QStandardItem(str(num)),
@@ -203,8 +206,10 @@ class Load_Barber_Table(QtWidgets.QWidget):
                     QtGui.QStandardItem(f"${order["service_price"]:,}"),
                     QtGui.QStandardItem(order["service_payment_method"]),
                     QtGui.QStandardItem(f"${order["tip"]:,}"),
-                    QtGui.QStandardItem(order["tip_payment_method"])
+                    QtGui.QStandardItem(order["tip_payment_method"]),
+                    QtGui.QStandardItem(time)
                 ]
+                print(f"Hora: {time} tipo:{type(time)}")
                 num += 1
                 self.model.appendRow(row)
 
@@ -217,6 +222,25 @@ class Load_Barber_Table(QtWidgets.QWidget):
             self.table.setModel(self.model)
             self.table.resizeColumnsToContents()
             self.table.setFocusPolicy(Qt.NoFocus)
+            self.main_layout.addWidget(self.table)
+
+class Load_Summary(QtWidgets.QWidget):
+    def __init__(self, exist: bool, created_table: QtWidgets.QTableView):
+        super().__init__()
+        #Layout
+        self.main_layout = QtWidgets.QHBoxLayout(self)
+
+        #Encabezados de la tabla
+        headers = ["Barbero","Se llevó", "Generó", "Efectivo", "Mercado Pago"]
+
+        #Modelo
+        self.model = QtGui.QStandardItemModel()
+        self.model.setHorizontalHeaderLabels(headers)
+
+        if exist:
+            created_table.setModel(self.model)
+        else:
+            self.table = QtWidgets.QTableView()
             self.main_layout.addWidget(self.table)
 
 def center_label(text: str) -> QtWidgets.QLabel:

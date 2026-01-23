@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from ui import components
 from logic import storage
+from datetime import datetime
 
 class Enter_Screen(QtWidgets.QWidget):
     def __init__(self, main_window: QtWidgets.QMainWindow):
@@ -595,6 +596,10 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
             self.barbers_layout.addWidget(label)
             num += 1
         self.main_layout.addLayout(self.barbers_layout)
+
+        #Label de Resumen
+        text = f"{num}-Resumen"
+        self.barbers_layout.addWidget(components.center_label(text))
     
     #Focus
     def showEvent(self, event):
@@ -613,10 +618,13 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
             num = int(event.text())
             if 0 < num <= len(self.barbers):
                 #Cargamos una tabla
-                self.load_table(num)
+                self.load_barber_table(num)
+            
+            if num == len(self.barbers)+1:
+                self.load_summary()
 
     #Cargar Tabla 
-    def load_table(self, num):
+    def load_barber_table(self, num):
         #findchild busca una tabla y si no la encuentra devuelve None
         existe = self.findChild(QtWidgets.QTableView)
         if existe:#Si existe una tabla llamamos a la función le pasamos la tabla
@@ -624,4 +632,14 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
         else:#Si no existe una tabla llamamos a la función y le pasamos None
             self.table = components.Load_Barber_Table(False, None, num)
             self.main_layout.addWidget(self.table)
-            
+    
+    def load_summary(self):
+        exist = self.findChild(QtWidgets.QTableView)
+
+        if exist:
+            print("Usando tabla existente para el resumen")
+            self.table = components.Load_Summary(True, exist)
+        else:
+            print("Creando una nueva tabla para el resumen")
+            self.table = components.Load_Summary(False, None)
+            self.main_layout.addWidget(self.table)
