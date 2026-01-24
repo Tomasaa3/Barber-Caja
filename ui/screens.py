@@ -34,11 +34,6 @@ class Enter_Screen(QtWidgets.QWidget):
         if event.key() == Qt.Key_Return:
             self.window.show_barbers_screen()
 
-        #Testing
-        if event.key() == Qt.Key_T:
-            barberos = self.window.config
-            print(barberos)
-
 class Barbers_Screen(QtWidgets.QWidget):
     def __init__(self, main_window: QtWidgets.QMainWindow):
         super().__init__()
@@ -81,8 +76,10 @@ class Barbers_Screen(QtWidgets.QWidget):
             num = int(tecla)
             if 0 < num < len(self.barbers)+1:
                 barber_list = list(self.barbers)
-                print(f"Barbero: {barber_list[num-1]}")
+                print(f"screens.py>Barbero: {barber_list[num-1]}")
+                print(f"screens.py>Barbero - Comisión: %{self.barbers[barber_list[num-1]]}")
                 self.order.barber = barber_list[num-1]
+                self.order.barber_comission = self.barbers[barber_list[num-1]]
                 self.window.show_service_payment_method_screen()
 
 class Service_Payment_Method_Screen(QtWidgets.QWidget):
@@ -135,8 +132,8 @@ class Service_Payment_Method_Screen(QtWidgets.QWidget):
             num = int(event.text())
             if 0 < num <= len(self.payment_methods):
                 payment_methods = list(self.payment_methods)
-                print(f"Servicio - Método de Pago: {payment_methods[num-1]}")
-                print(f"Servicio - Recarga: ${self.payment_methods[payment_methods[num-1]]:,}")
+                print(f"screens.py>Servicio - Método de Pago: {payment_methods[num-1]}")
+                print(f"screens.py>Servicio - Recarga: ${self.payment_methods[payment_methods[num-1]]:,}")
                 self.order.service_payment_method = payment_methods[num-1]
                 self.order.service_recharge = self.payment_methods[payment_methods[num-1]]
                 self.window.show_services_screen() #Pantalla siguiente
@@ -164,7 +161,7 @@ class Services_Screen(QtWidgets.QWidget):
             text = str(num) + "-" + service + "\n$" + str(self.services[service]+self.recharge)
             self.sec_layout.addWidget(components.center_label(text))
             num +=1
-        self.sec_layout.addWidget(components.center_label(f"1-Personalizado\n+${self.recharge}"))
+        self.sec_layout.addWidget(components.center_label(f"{num}-Personalizado\n+${self.recharge}"))
 
     #Focus
     def showEvent(self, event):
@@ -188,8 +185,8 @@ class Services_Screen(QtWidgets.QWidget):
             services = list(self.services)
             num = event.text()
             if 0 < int(num) <= len(services):
-                print(f"Servicio - Monto: ${self.services[services[int(num)-1]]+self.recharge:,}")
-                print(f"Servicio: {services[int(num)-1]}")
+                print(f"screens.py>Servicio - Monto: ${self.services[services[int(num)-1]]+self.recharge:,}")
+                print(f"screens.py>Servicio: {services[int(num)-1]}")
                 self.order.service = services[int(num)-1]
                 self.order.service_price = self.services[services[int(num)-1]]
                 self.window.show_tip_payment_method_screen()
@@ -211,8 +208,8 @@ class Services_Screen(QtWidgets.QWidget):
     
     #Al aceptar el monto
     def on_submit(self, answer):
-        print(f"Servicio - Monto: {answer}")
-        print("Servicio: Personalizado")
+        print(f"screens.py>Servicio - Monto: {answer}")
+        print("screens.py>Servicio: Personalizado")
         self.order.service = "Personalizado"
         self.order.service_price = int(answer)
         self.window.show_tip_payment_method_screen()
@@ -274,7 +271,7 @@ class Tip_Payment_Method_Screen(QtWidgets.QWidget):
             num = int(event.text())
             if 0 < num <= len(self.payment_methods):
                 payment_methods = list(self.payment_methods)
-                print(f"Propina - Método de Pago: {payment_methods[num-1]}")
+                print(f"screens.py>Propina - Método de Pago: {payment_methods[num-1]}")
                 self.order.tip_payment_method = payment_methods[num-1]
                 self.window.show_tip_screen()
 
@@ -302,7 +299,7 @@ class Tip_Screen(QtWidgets.QWidget):
 
     #Al aceptar
     def on_submitted(self, answer):
-        print(f"Propina - Monto: ${int(answer):,}")
+        print(f"screens.py>Propina - Monto: ${int(answer):,}")
         self.order.tip = int(answer)
         self.window.show_client_name_screen()
     
@@ -334,7 +331,7 @@ class Client_Name_Screen(QtWidgets.QWidget):
 
     #Al aceptar
     def on_subbmit(self, answer):
-        print(f"Cliente: {answer}\n")
+        print(f"screens.py>Cliente: {answer}\n")
         self.order.client_name = answer
         storage.save_order(self.order)
         self.window.show_enter_screen()
@@ -480,7 +477,7 @@ class Config_Services_Screen(QtWidgets.QWidget):
         if not value or not service:
             return
         else:
-            print(f"Se añadió el servicio: {service} Precio: $ {int(value):,}")
+            print(f"screens.py>Se añadió el servicio: {service} Precio: $ {int(value):,}")
             self.services[service] = int(value)
         self.load_services()
 
@@ -491,7 +488,7 @@ class Config_Services_Screen(QtWidgets.QWidget):
             return
         if self.table.currentIndex().column() != 0:
             return
-        print(f"Se borró el servicio: {sel_item}, Precio: $ {self.services[sel_item]:,}")
+        print(f"screens.py>Se borró el servicio: {sel_item}, Precio: $ {self.services[sel_item]:,}")
         del self.services[sel_item]
         self.load_services()
     
@@ -564,7 +561,7 @@ class Config_Payment_Methods_Screen(QtWidgets.QWidget):
     def del_payment_method(self):
         sel_item = self.table.currentIndex().data()
         if not sel_item:
-            print("No")
+            print("screens.py>No se ha seleccionado ningún Método de Pago")
             return
         else:
             if self.table.currentIndex().column() == 1:
@@ -637,9 +634,9 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
         exist = self.findChild(QtWidgets.QTableView)
 
         if exist:
-            print("Usando tabla existente para el resumen")
+            print("screens.py>Usando tabla existente para el resumen")
             self.table = components.Load_Summary(True, exist)
         else:
-            print("Creando una nueva tabla para el resumen")
+            print("screens.py>Creando una nueva tabla para el resumen")
             self.table = components.Load_Summary(False, None)
             self.main_layout.addWidget(self.table)

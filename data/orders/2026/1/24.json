@@ -1,0 +1,62 @@
+[
+    {
+        "barber": "Gera",
+        "barber_comission": 50,
+        "client_name": "Tomas",
+        "service_payment_method": "Efectivo",
+        "service_recharge": 0,
+        "service_price": 100,
+        "service": "Personalizado",
+        "tip_payment_method": "Efectivo",
+        "tip": 0,
+        "created_at": "2026-01-24T10:08:24.225159"
+    },
+    {
+        "barber": "Paya",
+        "barber_comission": 50,
+        "client_name": "Pedro",
+        "service_payment_method": "Efectivo",
+        "service_recharge": 0,
+        "service_price": 200,
+        "service": "Personalizado",
+        "tip_payment_method": "Efectivo",
+        "tip": 0,
+        "created_at": "2026-01-24T10:08:24.225159"
+    },
+    {
+        "barber": "Tizi",
+        "barber_comission": 45,
+        "client_name": "Wisin",
+        "service_payment_method": "Efectivo",
+        "service_recharge": 0,
+        "service_price": 150,
+        "service": "Personalizado",
+        "tip_payment_method": "Efectivo",
+        "tip": 0,
+        "created_at": "2026-01-24T10:08:24.225159"
+    },
+    {
+        "barber": "Gera",
+        "barber_comission": 50,
+        "client_name": "Piti Alvarez",
+        "service_payment_method": "Mercado Pago",
+        "service_recharge": 2500,
+        "service_price": 1000,
+        "service": "Personalizado",
+        "tip_payment_method": "Efectivo",
+        "tip": 2000,
+        "created_at": "2026-01-24T10:08:24.225159"
+    },
+    {
+        "barber": "Tizi",
+        "barber_comission": 45,
+        "client_name": "Yandel",
+        "service_payment_method": "Mercado Pago",
+        "service_recharge": 2500,
+        "service_price": 500,
+        "service": "Personalizado",
+        "tip_payment_method": "Mercado Pago",
+        "tip": 1000,
+        "created_at": "2026-01-24T10:08:24.225159"
+    }
+]

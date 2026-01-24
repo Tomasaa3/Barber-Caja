@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 #Mis archivos .py
 from logic import storage
+from logic import summary
 import config
 
 DATA_FILES = Path("data/orders")
@@ -209,19 +210,19 @@ class Load_Barber_Table(QtWidgets.QWidget):
                     QtGui.QStandardItem(order["tip_payment_method"]),
                     QtGui.QStandardItem(time)
                 ]
-                print(f"Hora: {time} tipo:{type(time)}")
                 num += 1
                 self.model.appendRow(row)
 
         if exsist: #Si existe una tabla, simplemente cargamos el modelo
-            print(f"Usando la tabla existente para {barberos[num_barber-1]}.")
+            print(f"components.py>Usando la tabla existente para {barberos[num_barber-1]}.")
             created_table.setModel(self.model)
+            created_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         else: #Si no existe creamos una tabla, cargamos el modelo.
-            print(f"Creando una nueva tabla para {barberos[num_barber-1]}")
+            print(f"components.py>Creando una nueva tabla para {barberos[num_barber-1]}")
             self.table = QtWidgets.QTableView()
             self.table.setModel(self.model)
-            self.table.resizeColumnsToContents()
             self.table.setFocusPolicy(Qt.NoFocus)
+            self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             self.main_layout.addWidget(self.table)
 
 class Load_Summary(QtWidgets.QWidget):
@@ -230,6 +231,9 @@ class Load_Summary(QtWidgets.QWidget):
         #Layout
         self.main_layout = QtWidgets.QHBoxLayout(self)
 
+        #Fecha
+        date = datetime.now()
+
         #Encabezados de la tabla
         headers = ["Barbero","Se llevó", "Generó", "Efectivo", "Mercado Pago"]
 
@@ -237,10 +241,26 @@ class Load_Summary(QtWidgets.QWidget):
         self.model = QtGui.QStandardItemModel()
         self.model.setHorizontalHeaderLabels(headers)
 
+        summarys = summary.load_summary(date)
+
+        for barber in summarys:
+            row = [
+                QtGui.QStandardItem(barber),
+                QtGui.QStandardItem(f"${summarys[barber]["se_llevo"]:,}"),
+                QtGui.QStandardItem(f"${summarys[barber]["genero"]:,}"),
+                QtGui.QStandardItem(f"${summarys[barber]["efectivo"]:,}"),
+                QtGui.QStandardItem(f"${summarys[barber]["mercado_pago"]:,}")
+            ]
+            self.model.appendRow(row)            
+
         if exist:
+            print("ACAA")
             created_table.setModel(self.model)
+            created_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         else:
             self.table = QtWidgets.QTableView()
+            self.table.setModel(self.model)
+            self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             self.main_layout.addWidget(self.table)
 
 def center_label(text: str) -> QtWidgets.QLabel:

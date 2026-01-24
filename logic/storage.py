@@ -12,7 +12,7 @@ def save_order(order):
 
     #Si el archivo existe
     if folder.exists():
-        print(f"Agregando datos a la orden")
+        print(f"storage.py>Agregando datos a la orden")
         loaded_order = load_orders(folder)
         current_order["created_at"] = current_order["created_at"].isoformat()
         loaded_order.append(current_order)
@@ -20,7 +20,7 @@ def save_order(order):
             json.dump(loaded_order, f, indent=4, ensure_ascii=False)
     #Si el archivo no existe
     else:
-        print(f"No se encontró la orden, creando una nueva...")
+        print(f"storage.py>No se encontró la orden, creando una nueva...")
         folder.parent.mkdir(parents=True, exist_ok=True)
         current_order["created_at"] = current_order["created_at"].isoformat()
         with open(folder, "w", encoding="utf-8") as f:
@@ -28,7 +28,7 @@ def save_order(order):
 
 #Carga la orden
 def load_orders(path: Path):
-    print(f"Cargando orden ubicada en: {path}")
+    print(f"storage.py>Cargando orden ubicada en: {path}")
     if path.exists():
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
