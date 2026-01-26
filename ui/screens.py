@@ -3,7 +3,9 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from ui import components
 from logic import storage
+from pathlib import Path
 from datetime import datetime
+import json
 
 class Enter_Screen(QtWidgets.QWidget):
     def __init__(self, main_window: QtWidgets.QMainWindow):
@@ -53,10 +55,7 @@ class Barbers_Screen(QtWidgets.QWidget):
         self.layout.addLayout(self.sec_layout)
         
         #Labels por barbero
-        num = 1
-        for barber in self.barbers:
-            self.sec_layout.addWidget(components.center_label(str(num)+"-"+barber))
-            num += 1
+        components.add_labels(self.sec_layout, self.barbers)
     
     #Focus del mouse y teclado
     def showEvent(self, event):
@@ -104,11 +103,7 @@ class Service_Payment_Method_Screen(QtWidgets.QWidget):
         self.sec_layout.addLayout(self.third_layout)
 
         #Métodos de Pago
-        num = 1
-        for method in self.payment_methods:
-            text = str(num) + "-" + method + "\n Recargo: $" + f"{self.payment_methods[method]:,}"
-            self.third_layout.addWidget(components.center_label(text))
-            num += 1
+        components.add_labels(self.third_layout, self.payment_methods, "Recargo: $")
 
     #Focus
     def showEvent(self, event):
@@ -156,11 +151,7 @@ class Services_Screen(QtWidgets.QWidget):
         self.main_layout.addLayout(self.sec_layout)
 
         #Servicios
-        num = 1
-        for service in self.services:
-            text = str(num) + "-" + service + "\n$" + str(self.services[service]+self.recharge)
-            self.sec_layout.addWidget(components.center_label(text))
-            num +=1
+        num = components.add_labels(self.sec_layout, self.services, "$", self.order.service_recharge)
         self.sec_layout.addWidget(components.center_label(f"{num}-Personalizado\n+${self.recharge}"))
 
     #Focus
@@ -579,64 +570,50 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
     def __init__(self, main_window: QtWidgets.QMainWindow):
         super().__init__()
         self.window = main_window
-        self.barbers = self.window.config["barbers"]
-        
+
         #Layout
         self.main_layout = QtWidgets.QVBoxLayout(self)
         self.barbers_layout = QtWidgets.QHBoxLayout()
-
-        #Label por Barbero
-        num = 1
-        for barber in self.barbers:
-            text = f"{num} - {barber}"
-            label = components.center_label(text)
-            self.barbers_layout.addWidget(label)
-            num += 1
         self.main_layout.addLayout(self.barbers_layout)
 
-        #Label de Resumen
-        text = f"{num}-Resumen"
-        self.barbers_layout.addWidget(components.center_label(text))
-    
-    #Focus
+        #Fecha y Folder
+        date = datetime.now()
+        data_files = Path("data/orders")
+        file = data_files / f"{date.year}" / f"{date.month}" / f"{date.day}.json"
+
+        self.orders = storage.load_orders(file)
+
+        #Barberos
+        self.barbers = []
+        for order in self.orders:
+            if not order["barber"] in self.barbers:
+                self.barbers.append(order["barber"])
+        num = components.add_labels(self.barbers_layout, self.barbers)
+        self.barbers_layout.addWidget(components.center_label(f"{num}-Resumen"))
+
+        #Tabla y Modelo
+        self.table = QtWidgets.QTableView()
+        self.model = QtGui.QStandardItemModel()
+
     def showEvent(self, event):
         super().showEvent(event)
         self.setFocus()
     
-    #Eventos del teclado
     def keyPressEvent(self, event):
-        
-        #Escape para salir
         if event.key() == Qt.Key_Escape:
             self.window.show_enter_screen()
         
-        #Número = Tabla de Barbero
         if event.text().isdigit():
-            num = int(event.text())
-            if 0 < num <= len(self.barbers):
-                #Cargamos una tabla
-                self.load_barber_table(num)
+            if 0 < int(event.text()) <= len(self.barbers):
+                self.show_table(self.barbers[int(event.text())-1])
             
-            if num == len(self.barbers)+1:
-                self.load_summary()
+            if int(event.text()) == len(self.barbers) + 1:
+                print("Mostrar resumen")
 
-    #Cargar Tabla 
-    def load_barber_table(self, num):
-        #findchild busca una tabla y si no la encuentra devuelve None
-        existe = self.findChild(QtWidgets.QTableView)
-        if existe:#Si existe una tabla llamamos a la función le pasamos la tabla
-            self.table = components.Load_Barber_Table(True, existe, num)
-        else:#Si no existe una tabla llamamos a la función y le pasamos None
-            self.table = components.Load_Barber_Table(False, None, num)
-            self.main_layout.addWidget(self.table)
-    
-    def load_summary(self):
-        exist = self.findChild(QtWidgets.QTableView)
-
-        if exist:
-            print("screens.py>Usando tabla existente para el resumen")
-            self.table = components.Load_Summary(True, exist)
+    def show_table(self, barber):
+        if self.findChild(QtWidgets.QTableView):
+            components.Load_Barber_Model(barber, self.table, self.orders)
         else:
-            print("screens.py>Creando una nueva tabla para el resumen")
-            self.table = components.Load_Summary(False, None)
             self.main_layout.addWidget(self.table)
+            components.Load_Barber_Model(barber, self.table, self.orders)
+            self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)

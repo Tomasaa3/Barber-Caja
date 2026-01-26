@@ -174,7 +174,7 @@ class Load_Barber_Table(QtWidgets.QWidget):
         date = datetime.now()
         folder = DATA_FILES / str(date.year) / str(date.month) / f"{date.day}.json"
         #Bareros
-        barberos = list(config.BARBEROS)
+        barberos = self.window.config["barbers"]
         #Encabezados de la tabla
         headers =[
             "Cliente",
@@ -225,6 +225,30 @@ class Load_Barber_Table(QtWidgets.QWidget):
             self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             self.main_layout.addWidget(self.table)
 
+class Load_Barber_Model(QtWidgets.QWidget):
+    def __init__(self, barber: str, table: QtWidgets.QTableView, orders):
+        super().__init__()
+        model = QtGui.QStandardItemModel()
+        headers = ["Cliente", "N°", "Servicio", "Monto", "Método de Pago", "Propina", "Método de Pago", "Hora"]
+        model.setHorizontalHeaderLabels(headers)
+        for order in orders:
+            if order["barber"] == barber:
+                print(order)
+                num = 1
+                row = [
+                    QtGui.QStandardItem(order["client_name"]),
+                    QtGui.QStandardItem(str(num)),
+                    QtGui.QStandardItem(order["service"]),
+                    QtGui.QStandardItem(f"${order["service_price"]+order["service_recharge"]:,}"),
+                    QtGui.QStandardItem(order["service_payment_method"]),
+                    QtGui.QStandardItem(f"${order["tip"]:,}"),
+                    QtGui.QStandardItem(order["tip_payment_method"]),
+                    QtGui.QStandardItem(order["created_at"])
+                ]
+                num += 1
+                model.appendRow(row)
+        table.setModel(model)
+
 class Load_Summary(QtWidgets.QWidget):
     def __init__(self, exist: bool, created_table: QtWidgets.QTableView):
         super().__init__()
@@ -267,3 +291,27 @@ def center_label(text: str) -> QtWidgets.QLabel:
     label = QtWidgets.QLabel(text)
     label.setAlignment(Qt.AlignCenter)
     return label
+
+def add_labels(layout: QtWidgets.QLayout, iterable, simbol=None, recharge=None):
+    if not simbol and not recharge:
+        num = 1
+        for item in iterable:
+            text = f"{num}-{item}"
+            layout.addWidget(center_label(text))
+            num += 1
+        return num
+    elif not recharge:
+        num = 1
+        for item in iterable:
+            text = f"{num}-{item}\n{simbol}{iterable[item]:,}"
+            layout.addWidget(center_label(text))
+            num += 1
+        return num
+            
+    else:
+        num = 1
+        for item in iterable:
+            text = f"{num}-{item}\n{simbol}{iterable[item]+recharge}"
+            layout.addWidget(center_label(text))
+            num += 1
+        return num

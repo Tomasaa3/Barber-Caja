@@ -1,0 +1,26 @@
+[
+    {
+        "barber": "Tizi",
+        "barber_comission": 45,
+        "client_name": "Pedrito",
+        "service_payment_method": "Mercado Pago",
+        "service_recharge": 2500,
+        "service_price": 18000,
+        "service": "Clásico",
+        "tip_payment_method": "Efectivo",
+        "tip": 0,
+        "created_at": "2026-01-25T11:39:06.661234"
+    },
+    {
+        "barber": "Paya",
+        "barber_comission": 50,
+        "client_name": "Tomas",
+        "service_payment_method": "Mercado Pago",
+        "service_recharge": 2500,
+        "service_price": 20000,
+        "service": "Degradado",
+        "tip_payment_method": "Efectivo",
+        "tip": 2000,
+        "created_at": "2026-01-25T12:36:45.134235"
+    }
+]
