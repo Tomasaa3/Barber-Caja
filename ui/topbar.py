@@ -24,3 +24,15 @@ class TopBar(QtWidgets.QMenuBar):
         payment_methods_action = QtWidgets.QAction("Métodos de Pago", self)
         payment_methods_action.triggered.connect(self.window.show_config_payment_methods_screen)
         config_menu.addAction(payment_methods_action)
+        
+        #Ingresos y Costos
+        revenue_and_costs_menu = self.addMenu("Ingresos y Costos")
+                #Costos
+        costs_action = QtWidgets.QAction("Costos", self)
+        costs_action.triggered.connect(self.window.show_costs_screen)
+        revenue_and_costs_menu.addAction(costs_action)
+                #Ingresos
+        revenue_action = QtWidgets.QAction("Ingresos", self)
+        revenue_action.triggered.connect(self.window.show_revenue_screen)
+        revenue_and_costs_menu.addAction(revenue_action)
+        

@@ -228,12 +228,13 @@ class Load_Barber_Table(QtWidgets.QWidget):
 class Load_Barber_Model(QtWidgets.QWidget):
     def __init__(self, barber: str, table: QtWidgets.QTableView, orders):
         super().__init__()
+        #Modelo
         model = QtGui.QStandardItemModel()
         headers = ["Cliente", "N°", "Servicio", "Monto", "Método de Pago", "Propina", "Método de Pago", "Hora"]
         model.setHorizontalHeaderLabels(headers)
+
         for order in orders:
             if order["barber"] == barber:
-                print(order)
                 num = 1
                 row = [
                     QtGui.QStandardItem(order["client_name"]),
@@ -250,7 +251,7 @@ class Load_Barber_Model(QtWidgets.QWidget):
         table.setModel(model)
 
 class Load_Summary(QtWidgets.QWidget):
-    def __init__(self, exist: bool, created_table: QtWidgets.QTableView):
+    def __init__(self, table: QtWidgets.QTableView):
         super().__init__()
         #Layout
         self.main_layout = QtWidgets.QHBoxLayout(self)
@@ -275,17 +276,8 @@ class Load_Summary(QtWidgets.QWidget):
                 QtGui.QStandardItem(f"${summarys[barber]["efectivo"]:,}"),
                 QtGui.QStandardItem(f"${summarys[barber]["mercado_pago"]:,}")
             ]
-            self.model.appendRow(row)            
-
-        if exist:
-            print("ACAA")
-            created_table.setModel(self.model)
-            created_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        else:
-            self.table = QtWidgets.QTableView()
-            self.table.setModel(self.model)
-            self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-            self.main_layout.addWidget(self.table)
+            self.model.appendRow(row)
+        table.setModel(self.model)        
 
 def center_label(text: str) -> QtWidgets.QLabel:
     label = QtWidgets.QLabel(text)

@@ -56,7 +56,7 @@ class Barbers_Screen(QtWidgets.QWidget):
         
         #Labels por barbero
         components.add_labels(self.sec_layout, self.barbers)
-    
+
     #Focus del mouse y teclado
     def showEvent(self, event):
         super().showEvent(event)
@@ -585,9 +585,14 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
 
         #Barberos
         self.barbers = []
-        for order in self.orders:
-            if not order["barber"] in self.barbers:
-                self.barbers.append(order["barber"])
+        if self.orders:
+            for order in self.orders:
+                if not order["barber"] in self.barbers:
+                    self.barbers.append(order["barber"])
+        else:
+            self.main_layout.addWidget(components.center_label("No hay servicios realizados hoy."))
+            return
+
         num = components.add_labels(self.barbers_layout, self.barbers)
         self.barbers_layout.addWidget(components.center_label(f"{num}-Resumen"))
 
@@ -605,15 +610,75 @@ class Consult_Mode_Screen(QtWidgets.QWidget):
         
         if event.text().isdigit():
             if 0 < int(event.text()) <= len(self.barbers):
-                self.show_table(self.barbers[int(event.text())-1])
-            
-            if int(event.text()) == len(self.barbers) + 1:
-                print("Mostrar resumen")
+                self.show_barber_table(self.barbers[int(event.text())-1])
 
-    def show_table(self, barber):
+            if int(event.text()) == len(self.barbers) + 1:
+                self.show_summary_table()
+
+    def show_barber_table(self, barber):
         if self.findChild(QtWidgets.QTableView):
             components.Load_Barber_Model(barber, self.table, self.orders)
         else:
             self.main_layout.addWidget(self.table)
             components.Load_Barber_Model(barber, self.table, self.orders)
             self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+
+    def show_summary_table(self):
+        if self.findChild(QtWidgets.QTableView):
+            components.Load_Summary(self.table)
+        else:
+            self.main_layout.addWidget(self.table)
+            components.Load_Summary(self.table)
+            self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+
+class Costs_Screen(QtWidgets.QWidget):
+    def __init__(self, main_window: QtWidgets.QMainWindow):
+        super().__init__()
+        self.window = main_window
+        #Layout
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.table_layout = QtWidgets.QHBoxLayout()
+        self.buttons_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.addLayout(self.table_layout)
+        self.table_layout.insertLayout(1, self.buttons_layout)
+
+        #Table
+        self.table = QtWidgets.QTableView()
+        self.table_layout.insertWidget(0, self.table)
+
+        #Botones
+            #Añadir
+        add_button = QtWidgets.QPushButton("Añadir")
+        self.buttons_layout.addWidget(add_button)
+            #Remover
+        remove_button = QtWidgets.QPushButton("Remover")
+        self.buttons_layout.addWidget(remove_button)
+            #Salir
+        exit_button = QtWidgets.QPushButton("Salir")
+        self.main_layout.addWidget(exit_button)
+    
+class Revenue_Screen(QtWidgets.QWidget):
+    def __init__(self, main_window: QtWidgets.QMainWindow):
+        super().__init__()
+        self.window = main_window
+        #Layout
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+        self.table_layout = QtWidgets.QHBoxLayout()
+        self.button_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.addLayout(self.table_layout)
+        self.table_layout.insertLayout(1, self.button_layout)
+
+        #Table
+        self.table = QtWidgets.QTableView()
+        self.table_layout.insertWidget(0, self.table)
+
+        #Botones
+            #Añadir
+        add_button = QtWidgets.QPushButton("Añadir")
+        self.button_layout.addWidget(add_button)
+            #Remover
+        remove_button = QtWidgets.QPushButton("Remover")
+        self.button_layout.addWidget(remove_button)
+            #Salir
+        exit_button = QtWidgets.QPushButton("Salir")
+        self.main_layout.addWidget(exit_button)

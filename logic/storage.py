@@ -28,9 +28,10 @@ def save_order(order):
 
 #Carga la orden
 def load_orders(path: Path):
-    print(f"storage.py>Cargando orden ubicada en: {path}")
     if path.exists():
+        print(f"storage.py>Cargando orden ubicada en: {path}")
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     else:
+        print(f"storage.py>No existe la la orden: {path}")
         return None

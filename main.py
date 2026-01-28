@@ -49,6 +49,12 @@ class MyWindow(QtWidgets.QMainWindow):
     
     def show_consult_mode_screen(self):
         self.setCentralWidget(screens.Consult_Mode_Screen(self))
+    
+    def show_costs_screen(self):
+        self.setCentralWidget(screens.Costs_Screen(self))
+    
+    def show_revenue_screen(self):
+        self.setCentralWidget(screens.Revenue_Screen(self))
 
 if __name__ == "__main__":
     import sys
